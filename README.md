@@ -14,6 +14,8 @@ b) Split merged sequence file into several of equal size
 
 c) Read merged file; sort data before split
 
+d) Rename output files based on first entry in file
+
 
 
 ## Usage

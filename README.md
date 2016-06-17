@@ -3,14 +3,14 @@ Scratchpad for working out kinks with Hadoop
 
 ## What does this do?
  
-Takes in a number of raw text files of different sizes; mapper does nothing. Before the default reduce is applied, they are merged into one sequence file.
+1) Takes in a number of raw text files of different sizes; Mapper does nothing. Before the default Reducer is applied, they are merged into one sequence file.
 
 ## Todo
 
 
 a) Guarantee files are read in order (numerically)
 
-b) Split merged sequence file into several of equal sized
+b) Split merged sequence file into several of equal size
 
 c) Read merged file; sort data before split
 
@@ -21,19 +21,17 @@ c) Read merged file; sort data before split
 Prerequites:
 
 
-* Hadoop 2.7.2 locally installed and running.
-
 * Java openJDK 1.8.0_91
+
+* Hadoop 2.7.2 locally installed and running
 
 * Eclipse
 
-* MapReduce project configured as Maven in Eclipse
+* MapReduce project configured as Maven in Eclipse; All external JARS are on build path
 
-* Some sort of input
+* Some sort of input set (See /SampleInputFiles)
 
-1. Export project as a .jar
-
-* Make sure that the class application entry point is set!
+1. Export project as a .jar (Make sure that the class application entry point is set!)
 
 2. Execute on hadoop
 

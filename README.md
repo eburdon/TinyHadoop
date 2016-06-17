@@ -37,7 +37,7 @@ Prerequites:
 
 2. Execute on hadoop
 
-> hadoop jar TinyHadoop.jar <HDFS input dir> <HDFS output dir>
+> hadoop jar TinyHadoop.jar HDFS_input_dir HDFS_output_dir
 
 ## Notes
 

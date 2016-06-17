@@ -15,8 +15,7 @@ public class ExampleMapper extends Mapper<NullWritable, BytesWritable, Text, Byt
 	private Text filename;
 
 	@Override
-	protected void setup(Mapper<NullWritable, BytesWritable, Text, BytesWritable>.Context context)
-			throws IOException, InterruptedException {
+	protected void setup(Context context) throws IOException, InterruptedException {
 		
 		InputSplit split = context.getInputSplit();
 		FileSplit fileSplit = (FileSplit) split;
@@ -26,8 +25,7 @@ public class ExampleMapper extends Mapper<NullWritable, BytesWritable, Text, Byt
 	}
 	
 	@Override
-	protected void map(NullWritable key, BytesWritable value,
-			Mapper<NullWritable, BytesWritable, Text, BytesWritable>.Context context)
+	protected void map(NullWritable key, BytesWritable value, Context context)
 			throws IOException, InterruptedException {
 		
 		// does nothing except write FILENAME,V

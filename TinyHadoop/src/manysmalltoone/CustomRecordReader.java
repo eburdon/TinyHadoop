@@ -11,18 +11,22 @@ package manysmalltoone;
 import java.io.IOException;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FSDataInputStream;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.BytesWritable;
+import org.apache.hadoop.io.IOUtils;
 import org.apache.hadoop.io.NullWritable;
-import org.apache.hadoop.mapred.FileSplit;
 import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.RecordReader;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
+import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 
 public class CustomRecordReader extends RecordReader<NullWritable, BytesWritable> {
 
 	private FileSplit fileSplit;
 	private Configuration conf;
-	private BytesWritable values = new BytesWritable();
+	private BytesWritable value = new BytesWritable();
 	private boolean processed = false;
 	
 	@Override
@@ -33,31 +37,45 @@ public class CustomRecordReader extends RecordReader<NullWritable, BytesWritable
 	
 	@Override
 	public void close() throws IOException {
-		// TODO Auto-generated method stub	
+		// do nothing
 	}
 
 	@Override
 	public NullWritable getCurrentKey() throws IOException, InterruptedException {
-		// TODO Auto-generated method stub
-		return null;
+		return NullWritable.get();
 	}
 
 	@Override
 	public float getProgress() throws IOException, InterruptedException {
-		// TODO Auto-generated method stub
-		return 0;
+		return processed ? 1.0f : 0.0f;
 	}
 
 	@Override
 	public boolean nextKeyValue() throws IOException, InterruptedException {
-		// TODO Auto-generated method stub
+		if (!processed) {
+			byte[] contents = new byte[(int) fileSplit.getLength()];
+			Path file = fileSplit.getPath();
+			FileSystem fs = file.getFileSystem(conf);
+			FSDataInputStream in = null;
+			
+			try {
+				in = fs.open(file);
+				IOUtils.readFully(in, contents, 0, contents.length);
+				value.set(contents, 0, contents.length);
+			} finally {
+				IOUtils.closeStream(in);
+			}
+			
+			processed = true;
+			return true;
+		}
+		
 		return false;
 	}
 
 	@Override
 	public BytesWritable getCurrentValue() throws IOException, InterruptedException {
-		// TODO Auto-generated method stub
-		return null;
+		return value;
 	}
 
 }

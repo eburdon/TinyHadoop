@@ -7,36 +7,54 @@
 
 package manysmalltoone;
 
-import org.apache.hadoop.mapreduce.JobContext;
-import org.apache.hadoop.mapreduce.OutputCommitter;
-import org.apache.hadoop.mapreduce.OutputFormat;
 import org.apache.hadoop.mapreduce.RecordWriter;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
+import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
 
 import java.io.IOException;
 
-import org.apache.hadoop.io.BytesWritable;
-import org.apache.hadoop.io.NullWritable;
+import org.apache.hadoop.fs.FSDataOutputStream;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
+//import org.apache.hadoop.io.BytesWritable;
+//import org.apache.hadoop.io.SequenceFile.Writer;
+import org.apache.hadoop.io.Text;
 
-public class CustomOutputFormat extends OutputFormat<NullWritable, BytesWritable> {
+
+//public class CustomOutputFormat extends SequenceFileOutputFormat<Text, BytesWritable> {
+public class CustomOutputFormat extends SequenceFileOutputFormat<Text, Text> {
+	
+//	@Override
+//	protected Writer getSequenceWriter(TaskAttemptContext context, Class<?> key, Class<?> value) throws IOException {
+//		// TODO Can I use this instead of RecordWriter?
+//		return super.getSequenceWriter(context, key, value);
+//	}
 
 	@Override
-	public void checkOutputSpecs(JobContext arg0) throws IOException, InterruptedException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public OutputCommitter getOutputCommitter(TaskAttemptContext arg0) throws IOException, InterruptedException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public RecordWriter<NullWritable, BytesWritable> getRecordWriter(TaskAttemptContext arg0)
+//	public RecordWriter<Text, BytesWritable> getRecordWriter(TaskAttemptContext context)
+	public RecordWriter<Text, Text> getRecordWriter(TaskAttemptContext context)
 			throws IOException, InterruptedException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+		
+		// todo: can I prune this function? If I'm initializing elsewhere, do I need this?
+		
+		// get target directory path
+		Path path = SequenceFileOutputFormat.getOutputPath(context);
+		
+		// create our file [name]
+		// TODO: Read the first input item and name the file based on that.
+		Path fullpath = new Path(path, "DEFAULT");
+		
+		// create the file in our file system
+		FileSystem fs = path.getFileSystem(context.getConfiguration());
+		
+		FSDataOutputStream fileOut = fs.create(fullpath, context);
+		
+		// todo: later
+		// stream will be initialized on first item read
+//		FSDataOutputStream fileOut = null;
+		
+		return new CustomRecordWriter(fileOut, context);
 
+	}
+	
 }

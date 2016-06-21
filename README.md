@@ -1,9 +1,11 @@
 # TinyHadoop
 Scratchpad for working out kinks with Hadoop
 
-## What does this do?
+## What does this do? / Milestones Hit
  
 1) Takes in a number of raw text files of different sizes; Mapper does nothing. Before the default Reducer is applied, they are merged into one sequence file.
+
+2) Output (reduce) file is named according to first item in the input
 
 ## Todo
 
@@ -12,11 +14,9 @@ a) Guarantee files are read in order (numerically)
 
 b) Split merged sequence file into several of equal size
 
-c) Read merged file; sort data before split
+c) Read merged file; sort data before split (Needs new sample input: e.g., all numbers)
 
-d) Rename output files based on first entry in file
-
-
+d) Try creating at least two reducer output files (e.g., two files, each named with first item)
 
 ## Usage
 

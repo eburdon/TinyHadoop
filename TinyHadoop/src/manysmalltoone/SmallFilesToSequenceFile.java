@@ -8,8 +8,6 @@ package manysmalltoone;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
-//import org.apache.hadoop.io.BytesWritable;
-//import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
@@ -29,26 +27,22 @@ public class SmallFilesToSequenceFile extends Configured implements Tool {
 		job.setJobName("SmallFilesToOneSequenceFile");
 		
 		job.setNumReduceTasks(1);
+		
 		FileInputFormat.setInputPaths(job, new Path(args[0]));
 		FileOutputFormat.setOutputPath(job, new Path(args[1]));
 		
-		// This is the magic between initialization --> mapper
-		// TODO: Change type
 		job.setInputFormatClass(CustomInputFormat.class);
 		job.setOutputFormatClass(CustomOutputFormat.class);
 		
 		job.setOutputKeyClass(Text.class);
 		
-		// TODO: Change type (all files!!)
-		// For testing, let's do a pure text -- text implementation
-		// We need to be able to read the text value, and name our file based
-		// off that.
-		// job.setOutputValueClass(BytesWritable.class);
+		/* TODO: Change type - make sure the output is a sequence file!
+		 * For development, do a pure text --> text implementation.
+		 * ? job.setOutputValueClass(BytesWritable.class) ? */
 		job.setOutputValueClass(Text.class);
 		
 		job.setMapperClass(CustomMapper.class);
 		
-		// run job
 		return job.waitForCompletion(true)? 0 : 1;
 	}
 	

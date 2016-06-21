@@ -11,18 +11,13 @@ import java.io.IOException;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-//import org.apache.hadoop.fs.Path;
-//import org.apache.hadoop.io.BytesWritable;
-//import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.RecordWriter;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
 
 
-// TODO: Make sure this fits for a SEQUENCE FILE 
-// http://johnnyprogrammer.blogspot.ca/2012/01/custom-file-output-in-hadoop.html
-//public class CustomRecordWriter extends RecordWriter<Text, BytesWritable> {
+// TODO: Make sure this fits for a SEQUENCE FILE
 public class CustomRecordWriter extends RecordWriter<Text, Text> {
 
 	private FSDataOutputStream out;
@@ -32,9 +27,8 @@ public class CustomRecordWriter extends RecordWriter<Text, Text> {
 	private char NEW_LINE;
 	private String name;
 	
-	// Constructor; called once for each split?
-	public CustomRecordWriter(FSDataOutputStream stream, TaskAttemptContext arg1) {
-		out = stream;
+	public CustomRecordWriter(TaskAttemptContext arg1) {
+		out = null;
 		context = arg1;
 		
 		// parsing constants
@@ -47,11 +41,16 @@ public class CustomRecordWriter extends RecordWriter<Text, Text> {
 	
 	@Override
 	public void close(TaskAttemptContext context) throws IOException, InterruptedException {
-		out.close();
+		if (out != null) {
+			out.close();
+		}
 	}
 
-	// TODO: needs exception handling?
-	// iterate until we build the file name; only on first file
+	/*
+	 * Parses text value until the first whitespace (space or new line).
+	 * @@params: Value from mapper
+	 * @@return: String of first item
+	 * */
 	private String parseFileName(Text value) {
 		String tmp = "";
 		
@@ -70,7 +69,6 @@ public class CustomRecordWriter extends RecordWriter<Text, Text> {
 		return tmp;
 	}
 	
-	// TODO: add exception handling
 	public FSDataOutputStream createOutputFile() throws IOException {
 		// get existing target directory path
 		Path path = SequenceFileOutputFormat.getOutputPath(context);
@@ -93,32 +91,23 @@ public class CustomRecordWriter extends RecordWriter<Text, Text> {
 	@Override
 	public void write(Text text, Text value) throws IOException, InterruptedException {
 		
-		if (out.equals(null)) {
-			// delay creating out file until here
+		if (out == null) {
+			
 			System.out.println("MERMAID -- NULL OUT STREAM\n\n");			
-			// get target directory path
-			// Path path = SequenceFileOutputFormat.getOutputPath(context);			
-		} else {
+			
 			if (name == "") {
+				// set new file name
 				name = parseFileName(value);
 				
-				// create file based on this name
-				System.out.println(name);
-				
-				System.out.println("Creating new outfile on this name");
-				System.out.println(out.toString());
+				// create output file
 				out = createOutputFile();
-				System.out.println(out.toString());
 			}
 		}
-		
-		// write key
-		out.writeBytes(text.toString() + ": ");
 		
 		// write values
 		out.writeBytes(value.toString());
 		
-		// EOF
+		// EOF (split)
 		out.writeBytes("\n");
 	}
 	

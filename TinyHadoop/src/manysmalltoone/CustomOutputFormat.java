@@ -35,7 +35,7 @@ public class CustomOutputFormat extends SequenceFileOutputFormat<Text, Text> {
 	public RecordWriter<Text, Text> getRecordWriter(TaskAttemptContext context)
 			throws IOException, InterruptedException {
 		
-		// todo: can I prune this function? If I'm initializing elsewhere, do I need this?
+		// TODO: can I prune this function? If I'm initializing elsewhere, do I need this?
 		
 		// get target directory path
 		Path path = SequenceFileOutputFormat.getOutputPath(context);

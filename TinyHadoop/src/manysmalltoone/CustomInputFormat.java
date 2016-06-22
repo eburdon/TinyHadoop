@@ -34,17 +34,24 @@ public class CustomInputFormat extends FileInputFormat<NullWritable, Text> {
 	public RecordReader<NullWritable, Text> createRecordReader(InputSplit split, TaskAttemptContext context)
 			throws IOException {
 		
+		// All of my (varied sized) splits will come into here
+		// I want to com
+		
+		// called once for each output
 		System.out.println("Creating a recordReader for: ");
 		System.out.println(split.toString());
 		
+		// breaks data into K/V pairs for the mapper
 		CustomRecordReader reader = new CustomRecordReader();
 		
 		try {
+			// initialize reader
 			reader.initialize(split, context);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 		
+		// it will be processed after this.
 		return reader;
 	}
 }

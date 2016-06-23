@@ -22,6 +22,11 @@ import org.apache.hadoop.mapreduce.RecordReader;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 
+
+/*
+ * Each input file has it's own CustomRecordReader.
+ * We need something else to sort / combine them
+ * */
 public class CustomRecordReader extends RecordReader<NullWritable, Text> {
 	private FileSplit fileSplit;
 	private Configuration conf;
@@ -29,11 +34,7 @@ public class CustomRecordReader extends RecordReader<NullWritable, Text> {
 	private boolean processed = false;
 	
 	@Override
-	public void initialize(InputSplit split, TaskAttemptContext context) throws IOException, InterruptedException {
-		
-		System.out.println("Initializing custom record reader");
-		System.out.println(split.toString()); // name of src file
-		
+	public void initialize(InputSplit split, TaskAttemptContext context) throws IOException, InterruptedException {		
 		this.fileSplit = (FileSplit) split;
 		this.conf = context.getConfiguration();
 	}
@@ -65,6 +66,7 @@ public class CustomRecordReader extends RecordReader<NullWritable, Text> {
 				in = fs.open(file);
 				IOUtils.readFully(in, contents, 0, contents.length);
 				value.set(contents, 0, contents.length);
+				
 			} finally {
 				IOUtils.closeStream(in);
 			}

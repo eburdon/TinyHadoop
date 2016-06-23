@@ -84,10 +84,6 @@ public class CustomRecordWriter extends RecordWriter<Text, Text> {
 		return fileOut;
 	}
 	
-	/*
-	* @@param: Text is the file name (e.g., where value found)
-	* @@param: Value is the text from the input;
-	*/
 	@Override
 	public void write(Text text, Text value) throws IOException, InterruptedException {
 		

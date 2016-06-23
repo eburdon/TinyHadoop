@@ -16,7 +16,7 @@ import org.apache.hadoop.mapreduce.lib.input.CombineFileSplit;
 import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 import org.apache.hadoop.mapreduce.lib.input.LineRecordReader;
 
-/* This is the one custom record reader for the entire input */
+
 public class CustomCombineRecordReader extends RecordReader<LongWritable, Text> {
 
 	// TODO: Will have to make this a sequence file record reader for BigHadoop
@@ -33,30 +33,16 @@ public class CustomCombineRecordReader extends RecordReader<LongWritable, Text> 
 		conf = context.getConfiguration();
 		
 		recordReader = new LineRecordReader();
-		
 		recordReader.initialize(fileSplit, context);
 	}
 
 	@Override
 	public LongWritable getCurrentKey() throws IOException, InterruptedException {
-		System.out.println("Current key: ");
-		System.out.println(recordReader.getCurrentKey());
 		return recordReader.getCurrentKey();
 	}
 
 	@Override
 	public Text getCurrentValue() throws IOException, InterruptedException {
-		System.out.println("Current value: ");
-		System.out.println(value);
-		
-		// our value is SEVERAL lines
-		// record reader is only getting one line
-		// I need to iterate over all
-		
-//		System.out.println("Returning...");
-//		System.out.println(recordReader.getCurrentValue());
-		
-//		return recordReader.getCurrentValue();
 		return value;
 	}
 
@@ -66,13 +52,8 @@ public class CustomCombineRecordReader extends RecordReader<LongWritable, Text> 
 	}
 
 	@Override
-	public boolean nextKeyValue() throws IOException, InterruptedException {
-		System.out.println("Next key value?");
-		System.out.println(recordReader.nextKeyValue());
-		
+	public boolean nextKeyValue() throws IOException, InterruptedException {		
 		if (!processed) {
-			
-			System.out.println("Hhola");
 			
 			byte[] contents = new byte[(int) fileSplit.getLength()];
 			
@@ -80,21 +61,13 @@ public class CustomCombineRecordReader extends RecordReader<LongWritable, Text> 
 			FileSystem fs = file.getFileSystem(conf);
 			FSDataInputStream in = null;
 			
-			try {
-				System.out.println("Opening file:");
-				System.out.println(file.toString());
-				
+			try {				
 				in = fs.open(file);
 				IOUtils.readFully(in, contents, 0, contents.length);
 				
+				// TODO: Sort content & remove EOF here before setting
+				
 				value.set(contents, 0, contents.length);
-				
-				// the value is set as the ENTIRE FILE
-				// e.g., all 10 lines
-				// need to make this a list?
-				System.out.println("Value set as:");
-				System.out.println(value.toString());
-				
 			} finally {
 				
 				System.out.println("Finished processing");
@@ -104,9 +77,6 @@ public class CustomCombineRecordReader extends RecordReader<LongWritable, Text> 
 			
 			processed = true;
 			return true;
-		} else {
-			System.out.println("I have another key value in this file!");
-			// todo: no handling here?!
 		}
 		
 		return false;

@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
-//import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.JobContext;
@@ -18,11 +17,10 @@ import org.apache.hadoop.mapreduce.lib.input.CombineFileSplit;
 
 public class CustomCombineInputFormat extends CombineFileInputFormat<LongWritable, Text> {
 	
-	// Constructor; I must include the max split size
-	// TODO: change max size to force-create more files?
+	// TODO: set split size?
 	public CustomCombineInputFormat() {
 		super();
-//		setMaxSplitSize(67108864);
+		// setMaxSplitSize(67108864);
 	}
 	
 	@Override

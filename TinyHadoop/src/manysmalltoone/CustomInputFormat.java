@@ -22,15 +22,12 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 public class CustomInputFormat extends FileInputFormat<NullWritable, Text> {
 
 	@Override
-	// TODO: I want to merge all the input files, then resplit?
 	protected boolean isSplitable(JobContext context, Path filename) {
-		// called once for each split (e.g., each input file)
 		return false;
 	}
 
 
 	@Override
-	// public RecordReader<NullWritable, BytesWritable> createRecordReader(InputSplit split, TaskAttemptContext context)
 	public RecordReader<NullWritable, Text> createRecordReader(InputSplit split, TaskAttemptContext context)
 			throws IOException {
 		
@@ -38,13 +35,11 @@ public class CustomInputFormat extends FileInputFormat<NullWritable, Text> {
 		CustomRecordReader reader = new CustomRecordReader();
 		
 		try {
-			// initialize reader
 			reader.initialize(split, context);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 		
-		// it will be processed after this.
 		return reader;
 	}
 }

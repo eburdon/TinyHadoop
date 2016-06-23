@@ -31,7 +31,7 @@ public class SmallFilesToSequenceFile extends Configured implements Tool {
 		FileInputFormat.setInputPaths(job, new Path(args[0]));
 		FileOutputFormat.setOutputPath(job, new Path(args[1]));
 		
-//		job.setInputFormatClass(CustomInputFormat.class);
+		// job.setInputFormatClass(CustomInputFormat.class);
 		job.setInputFormatClass(CustomCombineInputFormat.class);
 		
 		job.setOutputFormatClass(CustomOutputFormat.class);

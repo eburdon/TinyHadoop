@@ -26,10 +26,6 @@ public class CustomMapper extends Mapper<
 		Text testKey = new Text();
 		testKey.set("Hello");
 		
-//		System.out.println("Mapper: writing!");
-//		System.out.println(value.toString());
-//		System.out.println(testKey.toString());
-		
 		// this is the K, V sent to the shuffle -> reducer
 		context.write(testKey, value);
 	}

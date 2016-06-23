@@ -24,7 +24,6 @@ public class CustomOutputFormat extends SequenceFileOutputFormat<Text, Text> {
 //	}
 
 	@Override
-//	public RecordWriter<Text, BytesWritable> getRecordWriter(TaskAttemptContext context)
 	public RecordWriter<Text, Text> getRecordWriter(TaskAttemptContext context)
 			throws IOException, InterruptedException {
 		

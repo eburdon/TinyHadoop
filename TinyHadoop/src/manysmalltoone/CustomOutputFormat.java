@@ -27,6 +27,9 @@ public class CustomOutputFormat extends SequenceFileOutputFormat<Text, Text> {
 //	public RecordWriter<Text, BytesWritable> getRecordWriter(TaskAttemptContext context)
 	public RecordWriter<Text, Text> getRecordWriter(TaskAttemptContext context)
 			throws IOException, InterruptedException {
+		
+		System.out.println("Get Record Writer");
+		
 		return new CustomRecordWriter(context);
 	}
 	
